@@ -1,2 +1,1 @@
-worker: python ivasms_to_telegram.py
-
+worker: python ivasms_bot.py
