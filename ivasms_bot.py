@@ -49,7 +49,7 @@ def parse_messages(html):
         }
     ]
 
-def send_to_telegram(message):
+async def send_to_telegram(message):
     keyboard = [
         [
             InlineKeyboardButton("📢 Main Channel", url=MAIN_CHANNEL_LINK),
@@ -58,7 +58,12 @@ def send_to_telegram(message):
         [InlineKeyboardButton("👨‍💻 BOT OWNER", url=BOT_OWNER_LINK)]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    bot.send_message(chat_id=CHAT_ID, text=message, reply_markup=reply_markup, parse_mode="HTML")
+    await bot.send_message(
+        chat_id=CHAT_ID,
+        text=message,
+        reply_markup=reply_markup,
+        parse_mode="HTML"
+    )
 
 def format_message(msg):
     country_info = get_country_info(msg["number"])
@@ -73,7 +78,7 @@ def format_message(msg):
 📝 <b>Msg:</b> {msg['msg']}
 """.strip()
 
-def main():
+async def main():
     sent_otps = set()
     while True:
         html = login_and_fetch()
@@ -81,9 +86,11 @@ def main():
         for msg in messages:
             if msg['otp'] not in sent_otps:
                 text = format_message(msg)
-                send_to_telegram(text)
+                await send_to_telegram(text)  # <- هنا await
                 sent_otps.add(msg['otp'])
-        time.sleep(CHECK_INTERVAL)
+        await asyncio.sleep(CHECK_INTERVAL)
+
 
 if __name__ == "__main__":
-    main()
+    import asyncio
+    asyncio.run(main())
