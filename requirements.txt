@@ -1,4 +1,3 @@
-aiogram
-aiohttp
-beautifulsoup4
-lxml
+python-telegram-bot==20.3
+phonenumbers
+requests
